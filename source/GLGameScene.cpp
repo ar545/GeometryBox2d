@@ -79,12 +79,14 @@ bool GameScene::init(const std::shared_ptr<cugl::AssetManager>& assets) {
 
     Vec2* vec = reinterpret_cast<Vec2*>(CIRCLE);
     int num_points = ((sizeof CIRCLE) / (2 * sizeof(*CIRCLE)));
+    // CULog("%d", num_points);
     _spline.set(vec, num_points);
+    _spline.setClosed(true);
     
 
     buildGeometry();
     sel = -1;
-    previous_timestep = 0.015f;
+    previous_timestep = 0.009f;
 
     _world = physics2::ObstacleWorld::alloc(Rect(Vec2(0, 0), (getSize() / PHYSICS_SCALE)), Vec2(0, -GRAVITY));
     addObstacles();
@@ -159,6 +161,8 @@ void GameScene::update(float timestep) {
     // This SYNCHRONIZES the call back functions with the animation frame.
     _input.update();
 
+    //CULog("%f", timestep);
+
     Vec3 mouse_pos_vec3 = screenToWorldCoords(_input.getPosition());
     Vec2 mouse_pos_vec2 = Vec2(mouse_pos_vec3.x, mouse_pos_vec3.y).subtract(getSize() / 2);
 
@@ -193,7 +197,31 @@ void GameScene::update(float timestep) {
         addObstacles();
         _duplicate_world->clear();
         addDuplicateObstacles();
+        _world->resetTime();
+        _duplicate_world->resetTime();
     }
+
+    //if (_world->getTime() % 100 == 0) {
+    //    CULog("leftworld, %d, %f", _world->getTime(), _star->getPosition().x);
+    //}
+    //if (_duplicate_world->getTime() % 100 == 0) {
+    //    CULog("rightworld, %d, %f", _duplicate_world->getTime(), _duplicate_star->getPosition().x);
+    //}
+    if (_world->getTime() == _duplicate_world->getTime()) {
+        if (_star->getPosition().x != _duplicate_star->getPosition().x) {
+            CULog("xpos, %f, %f", _star->getPosition().x, _duplicate_star->getPosition().x);
+        }
+        else if (_star->getPosition().y != _duplicate_star->getPosition().y) {
+            CULog("ypos, %f, %f", _star->getPosition().y, _duplicate_star->getPosition().y);
+        }
+        else if (_star->getAngle() != _duplicate_star->getAngle()) {
+            CULog("angle, %f, %f", _star->getAngle(), _duplicate_star->getAngle());
+        }
+        else {
+            CULog("deterministic at %d", _world->getTime());
+        }
+    }
+
 }
 
 /**
@@ -236,7 +264,7 @@ void GameScene::render(const std::shared_ptr<cugl::SpriteBatch>& batch) {
         duplicate_transform.rotate(_duplicate_star->getAngle()).translate((_duplicate_star->getPosition()) * PHYSICS_SCALE);
         batch->fill(_star_poly, Vec2::ZERO, duplicate_transform); // set origin not to be 'getSize() / 2'
     }
-
+    // batch->drawText(to_string(previous_timestep), Font::Font(), getSize() / 2);
     batch->end();
 }
 
@@ -257,6 +285,7 @@ void GameScene::buildGeometry() {
     sp.set(&_spline);
     sp.calculate();
     _spline_path = sp.getPath();
+    //_spline_path->set
 
     SimpleExtruder se = SimpleExtruder();
     se.set(_spline_path);

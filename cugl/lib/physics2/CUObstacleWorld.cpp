@@ -236,6 +236,7 @@ bool ObstacleWorld::init(const Rect bounds) {
  */
 bool ObstacleWorld::init(const Rect bounds, const Vec2 gravity) {
     _remainingtime = 0;
+    time = 0;
     CUAssertLog(!_real_world,"Attempt to reinitialize and active world");
     CUAssertLog(!_draw_world,"Attempt to reinitialize and active draw world");
     _bounds = bounds;
@@ -357,6 +358,10 @@ void ObstacleWorld::setGravity(const Vec2 gravity) {
     }
 }
 
+void ObstacleWorld::resetTime() {
+    time = 0;
+}
+
 /**
  * Executes a single step of the physics engine.
  *
@@ -386,6 +391,7 @@ void ObstacleWorld::update(float dt) {
         }
         _real_world->Step(ministep, _itvelocity, _itposition);
         totaltime -= ministep;
+        time++;
     }
 
     // Now our real world is in the right state. Make one final step to set up the draw world and remember the remaining time from this frame

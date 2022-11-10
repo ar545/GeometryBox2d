@@ -49,7 +49,7 @@ int main(int argc, char * argv[]) {
     app.setName("Geometry Lab");
     app.setOrganization("GDIAC");
     app.setHighDPI(true);
-    //app.setFPS(60.0f);
+    app.setFPS(60.0f);
 
     // VARY THIS TO TRY OUT YOUR SCENE GRAPH
     app.setDisplaySize(1280, 720); // 16x9,  Android phones, PC Gaming

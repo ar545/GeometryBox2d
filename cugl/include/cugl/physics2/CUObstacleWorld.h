@@ -101,6 +101,8 @@ protected:
     int _itvelocity;
     /** The number of position iterations for the constrain solvers */
     int _itposition;
+    /** the number of steps after last reset */
+    int time;
     /** The current gravitational value of the world */
     Vec2 _gravity;
     
@@ -229,6 +231,10 @@ public:
      * @return a reference to the Box2d world.
      */
     b2World* getWorld() { return _real_world; }
+
+    void resetTime();
+
+    int getTime() { return time; }
     
     /**
      * Returns true if the physics is locked to a constant timestep.
