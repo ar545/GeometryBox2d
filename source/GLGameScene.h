@@ -43,12 +43,21 @@ protected:
     cugl::Poly2 _star_poly;
     /** the index of knob being selected (0 to 7), -1 if non selected */
     int sel;
+    /** the pervious timestep before this current timestep, to be used by duplicate world */
+    float previous_timestep;
     /** The physics world to animate the falling */
     std::shared_ptr<cugl::physics2::ObstacleWorld> _world;
     /** The outside "circle" */
     std::shared_ptr<cugl::physics2::PolygonObstacle> _center;
     /** The falling star */
     std::shared_ptr<cugl::physics2::PolygonObstacle> _star;
+
+    /** The physics world to animate the falling */
+    std::shared_ptr<cugl::physics2::ObstacleWorld> _duplicate_world;
+    /** The outside "circle" */
+    std::shared_ptr<cugl::physics2::PolygonObstacle> _duplicate_center;
+    /** The falling star */
+    std::shared_ptr<cugl::physics2::PolygonObstacle> _duplicate_star;
 
     // PUT OTHER ATTRIBUTES HERE AS NECESSARY
 
@@ -66,6 +75,8 @@ protected:
     void buildGeometry();
 
     void addObstacles();
+
+    void addDuplicateObstacles();
     
 public:
 #pragma mark -
