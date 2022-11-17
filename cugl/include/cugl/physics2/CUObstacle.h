@@ -931,7 +931,7 @@ namespace cugl {
             *
             * All force applications to an object should be put in this function.
             */
-            virtual void updatePhysics(float dt, float timestep, bool real) { return; }
+            virtual void updatePhysics(float dt, int timecount, bool real) { return; }
 
             /**
              * Returns the active listener to this object.

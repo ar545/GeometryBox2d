@@ -14,6 +14,7 @@
 #include <cugl/cugl.h>
 #include <vector>
 #include "GLInputController.h"
+#include "../build-win10/Geometry/GLStar.h"
 
 /**
  * This class is the primary gameplay constroller for the demo.
@@ -50,7 +51,7 @@ protected:
     /** The outside "circle" */
     std::shared_ptr<cugl::physics2::PolygonObstacle> _center;
     /** The falling star */
-    std::shared_ptr<cugl::physics2::PolygonObstacle> _star;
+    std::shared_ptr<Star> _star;
 
     /** The physics world to animate the falling */
     std::shared_ptr<cugl::physics2::ObstacleWorld> _duplicate_world;

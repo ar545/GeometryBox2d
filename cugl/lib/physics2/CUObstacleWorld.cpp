@@ -180,6 +180,19 @@ _destroy(false) {
     shouldCollide  = nullptr;
     destroyFixture = nullptr;
     destroyJoint   = nullptr;
+
+    onBeginContact = [this](b2Contact* contact) {
+        b2Body* body1 = contact->GetFixtureA()->GetBody();
+        b2Body* body2 = contact->GetFixtureB()->GetBody();
+        physics2::Obstacle* bd1 = reinterpret_cast<physics2::Obstacle*>(body1->GetUserData().pointer);
+        physics2::Obstacle* bd2 = reinterpret_cast<physics2::Obstacle*>(body2->GetUserData().pointer);
+        if (bd1->getName() == "star") {
+            body1->ApplyForceToCenter(b2Vec2(0, 100000), true);
+        }
+        if (bd2->getName() == "star") {
+            body2->ApplyForceToCenter(b2Vec2(0, 100000), true);
+        }
+    };
 }
 
 /**
@@ -387,7 +400,7 @@ void ObstacleWorld::update(float dt) {
 
     while (totaltime > ministep) {
         for (auto it : _objects) {
-            it->updatePhysics(ministep, ministep, true);
+            it->updatePhysics(ministep, time, true);
         }
         _real_world->Step(ministep, _itvelocity, _itposition);
         totaltime -= ministep;
@@ -399,7 +412,7 @@ void ObstacleWorld::update(float dt) {
     // Sync real body to draw body
     for (auto it : _objects) {
         it->syncBodies();
-        it->updatePhysics(_remainingtime, ministep, false);
+        it->updatePhysics(_remainingtime, time, false);
     }
     // Step the draw world by the remaining time
     _draw_world->Step(_remainingtime, _itvelocity, _itposition);
@@ -526,3 +539,15 @@ void ObstacleWorld::rayCast(std::function<float(b2Fixture* fixture, const Vec2 p
     proxy.onQuery = callback;
     _real_world->RayCast(&proxy, b2Vec2(point1.x,point1.y), b2Vec2(point2.x,point2.y));
 }
+
+
+
+//void ObstacleWorld::beginContact(b2Contact* contact) {
+//    b2Body* body1 = contact->GetFixtureA()->GetBody();
+//    b2Body* body2 = contact->GetFixtureB()->GetBody();
+//    physics2::Obstacle* bd1 = reinterpret_cast<physics2::Obstacle*>(body1->GetUserData().pointer);
+//    physics2::Obstacle* bd2 = reinterpret_cast<physics2::Obstacle*>(body2->GetUserData().pointer);
+//    if (bd1->getName() == "star") {
+//
+//    }
+//}

@@ -109,13 +109,14 @@ void GameScene::addObstacles() {
     _center = cugl::physics2::PolygonObstacle::alloc(spline_copy, Vec2::ZERO);
 
     Poly2 star_copy = Poly2(_star_poly) / PHYSICS_SCALE;
-    _star = cugl::physics2::PolygonObstacle::alloc(star_copy, Vec2::ZERO);
+    _star = (Star::alloc(star_copy, Vec2::ZERO));
 
     _center->setBodyType(b2_staticBody);
     _star->setBodyType(b2_dynamicBody);
     _star->setDensity(1);
     _center->setPosition(getSize() / (2 * PHYSICS_SCALE));
     _star->setPosition(getSize() / (2 * PHYSICS_SCALE));
+    _star->setName("star");
     _world->addObstacle(_center);
     _world->addObstacle(_star);
 }
@@ -128,13 +129,15 @@ void GameScene::addDuplicateObstacles() {
     _duplicate_center = cugl::physics2::PolygonObstacle::alloc(spline_copy, Vec2::ZERO);
 
     Poly2 star_copy = Poly2(_star_poly) / PHYSICS_SCALE;
-    _duplicate_star = cugl::physics2::PolygonObstacle::alloc(star_copy, Vec2::ZERO);
+    //_duplicate_star = cugl::physics2::PolygonObstacle::alloc(star_copy, Vec2::ZERO);
+    _duplicate_star = Star::alloc(star_copy, Vec2::ZERO);
 
     _duplicate_center->setBodyType(b2_staticBody);
     _duplicate_star->setBodyType(b2_dynamicBody);
     _duplicate_star->setDensity(1);
     _duplicate_center->setPosition(getSize() / (2 * PHYSICS_SCALE));
     _duplicate_star->setPosition(getSize() / (2 * PHYSICS_SCALE));
+    _duplicate_star->setName("star");
     _duplicate_world->addObstacle(_duplicate_center);
     _duplicate_world->addObstacle(_duplicate_star);
 }
@@ -217,9 +220,9 @@ void GameScene::update(float timestep) {
         else if (_star->getAngle() != _duplicate_star->getAngle()) {
             CULog("angle, %f, %f", _star->getAngle(), _duplicate_star->getAngle());
         }
-        else {
+        /*else {
             CULog("deterministic at %d", _world->getTime());
-        }
+        }*/
     }
 
 }
@@ -257,7 +260,7 @@ void GameScene::render(const std::shared_ptr<cugl::SpriteBatch>& batch) {
     Affine2 transform = Affine2();
     transform.rotate(_star->getAngle()).translate((_star->getPosition())* PHYSICS_SCALE);
     batch->fill(_star_poly, Vec2::ZERO, transform); // set origin not to be 'getSize() / 2'
-    if (_star->getAngle() != _duplicate_star->getAngle() || _star->getPosition() != _duplicate_star->getPosition()) {
+    if (_world->getTime() == _duplicate_world->getTime() && (_star->getAngle() != _duplicate_star->getAngle() || _star->getPosition() != _duplicate_star->getPosition())) {
         batch->setColor(Color4::GREEN);
         // TODO: use draw angle and draw position instead of real angle and real position
         Affine2 duplicate_transform = Affine2();
@@ -298,7 +301,7 @@ void GameScene::buildGeometry() {
 
     for (int i = 0; i < 4; i++) {
         Vec2 v_left = _spline.getTangent(2 * i);
-        Vec2 v_right = _spline.getTangent(2 * i + 1);
+        Vec2 v_right = _spline.getTangent(i == 0 ? 7 : (2 * i - 1));
         Path2 path = Path2();
         path.add(0, v_left);
         path.add(1, v_right);

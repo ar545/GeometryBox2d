@@ -935,7 +935,7 @@ namespace cugl {
              *
             * @return a (weak) reference to Box2D body for this obstacle.
             */
-            virtual b2Body* getDrawBody() override { return _realbody; }
+            virtual b2Body* getDrawBody() override { return _drawbody; }
 
             /*
             * Returns the necessary BodyData class in order to update this body in another game instance
