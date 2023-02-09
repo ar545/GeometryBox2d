@@ -210,20 +210,20 @@ void GameScene::update(float timestep) {
     //if (_duplicate_world->getTime() % 100 == 0) {
     //    CULog("rightworld, %d, %f", _duplicate_world->getTime(), _duplicate_star->getPosition().x);
     //}
-    if (_world->getTime() == _duplicate_world->getTime()) {
-        if (_star->getPosition().x != _duplicate_star->getPosition().x) {
-            CULog("xpos, %f, %f", _star->getPosition().x, _duplicate_star->getPosition().x);
-        }
-        else if (_star->getPosition().y != _duplicate_star->getPosition().y) {
-            CULog("ypos, %f, %f", _star->getPosition().y, _duplicate_star->getPosition().y);
-        }
-        else if (_star->getAngle() != _duplicate_star->getAngle()) {
-            CULog("angle, %f, %f", _star->getAngle(), _duplicate_star->getAngle());
-        }
-        /*else {
-            CULog("deterministic at %d", _world->getTime());
-        }*/
-    }
+    //if (_world->getTime() == _duplicate_world->getTime()) {
+    //    if (_star->getPosition().x != _duplicate_star->getPosition().x) {
+    //        CULog("xpos, %f, %f", _star->getPosition().x, _duplicate_star->getPosition().x);
+    //    }
+    //    else if (_star->getPosition().y != _duplicate_star->getPosition().y) {
+    //        CULog("ypos, %f, %f", _star->getPosition().y, _duplicate_star->getPosition().y);
+    //    }
+    //    else if (_star->getAngle() != _duplicate_star->getAngle()) {
+    //        CULog("angle, %f, %f", _star->getAngle(), _duplicate_star->getAngle());
+    //    }
+    //    /*else {
+    //        CULog("deterministic at %d", _world->getTime());
+    //    }*/
+    //}
 
 }
 

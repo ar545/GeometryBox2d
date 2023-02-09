@@ -62,16 +62,40 @@ bool InputController::init() {
         });
         _active = true;
     }
+    Touchscreen* touch = Input::get<Touchscreen>();
+    if (touch) {
+        //touch->setPointerAwareness(Mouse::PointerAwareness::DRAG);
+        _touchKey = touch->acquireKey();
+        touch->addBeginListener(_touchKey, [=](const cugl::TouchEvent& event, bool focus) {
+            this->touchDownCB(event, focus);
+            });
+        touch->addEndListener(_touchKey, [=](const cugl::TouchEvent& event, bool focus) {
+            this->touchUpCB(event, focus);
+            });
+        touch->addMotionListener(_touchKey, [=](const cugl::TouchEvent& event, const Vec2 previous, bool focus) {
+            this->touchmotionCB(event, previous, focus);
+            });
+        _active = true;
+    }
     return _active;
 }
 
 void InputController::dispose() {
     if (_active) {
         Mouse* mouse = Input::get<Mouse>();
-        mouse->removePressListener(_mouseKey);
-        mouse->removeReleaseListener(_mouseKey);
-        mouse->removeDragListener(_mouseKey);
-        mouse->setPointerAwareness(Mouse::PointerAwareness::BUTTON);
+        if (mouse) {
+            mouse->removePressListener(_mouseKey);
+            mouse->removeReleaseListener(_mouseKey);
+            mouse->removeDragListener(_mouseKey);
+            mouse->setPointerAwareness(Mouse::PointerAwareness::BUTTON);
+        }
+        Touchscreen* touch = Input::get<Touchscreen>();
+        if (touch) {
+            touch->removeBeginListener(_touchKey);
+            touch->removeEndListener(_touchKey);
+            touch->removeMotionListener(_touchKey);
+            //touch->setPointerAwareness();
+        }
         _active = false;
     }
 }
@@ -89,9 +113,16 @@ void InputController::dispose() {
  */
 void InputController::update() {
     _prevDown = _currDown;
-    _currDown = _mouseDown;
     _prevPos = _currPos;
-    _currPos = _mousePos;
+    Mouse* mouse = Input::get<Mouse>();
+    if (mouse) {
+        _currDown = _mouseDown;
+        _currPos = _mousePos;
+    }
+    else {
+        _currDown = _touchDown;
+        _currPos = _touchPos;
+    }
     
 }
 
@@ -145,6 +176,29 @@ void InputController::buttonUpCB(const cugl::MouseEvent& event, Uint8 clicks, bo
 void InputController::motionCB(const cugl::MouseEvent& event, const Vec2 previous, bool focus) {
     if (_mouseDown) {
         _mousePos = event.position;
+    }
+}
+
+void InputController::touchDownCB(const cugl::TouchEvent& event, bool focus)
+{
+    if (!_touchDown) {
+        _touchDown = true;
+        _touchPos = event.position;
+    }
+}
+
+void InputController::touchUpCB(const cugl::TouchEvent& event, bool focus)
+{
+    // Only recognize the first finger
+    if (_touchDown /* &&  TODO */) {
+        _touchDown = false;
+    }
+}
+
+void InputController::touchmotionCB(const cugl::TouchEvent& event, const cugl::Vec2 previous, bool focus)
+{
+    if (_touchDown) {
+        _touchPos = event.position;
     }
 }
 

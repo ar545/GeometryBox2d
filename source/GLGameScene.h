@@ -13,8 +13,8 @@
 #define __GL_GAME_SCENE_H__
 #include <cugl/cugl.h>
 #include <vector>
+#include "GLStar.h"
 #include "GLInputController.h"
-#include "../build-win10/Geometry/GLStar.h"
 
 /**
  * This class is the primary gameplay constroller for the demo.

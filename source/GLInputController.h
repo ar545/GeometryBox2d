@@ -43,6 +43,12 @@ protected:
     cugl::Vec2 _mousePos;
     /** Whether the (left) mouse button is down */
     bool _mouseDown;
+    /** The key for the touch listeners */
+    Uint32 _touchKey;
+    /** The touch position (for mice-based interfaces) */
+    cugl::Vec2 _touchPos;
+    /** Whether the (left) touch button is down */
+    bool _touchDown;
     
 #pragma mark Input Control
 public:
@@ -201,6 +207,42 @@ private:
      * @param focus     Whether this device has focus (UNUSED)
      */
     void motionCB(const cugl::MouseEvent& event, const cugl::Vec2 previous, bool focus);
+
+#pragma mark Touch Callbacks
+private:
+    /**
+     * Call back to execute when a mouse button is first pressed.
+     *
+     * This function will record a press only if the left button is pressed.
+     *
+     * @param event     The event with the mouse information
+     * @param focus     Whether this device has focus (UNUSED)
+     */
+    void touchDownCB(const cugl::TouchEvent& event, bool focus);
+
+    /**
+     * Call back to execute when a mouse button is first released.
+     *
+     * This function will record a release for the left mouse button.
+     *
+     * @param event     The event with the mouse information
+     * @param focus     Whether this device has focus (UNUSED)
+     */
+    void touchUpCB(const cugl::TouchEvent& event, bool focus);
+
+    /**
+     * Call back to execute when the mouse moves.
+     *
+     * This input controller sets the pointer awareness only to monitor a mouse
+     * when it is dragged (moved with button down), not when it is moved. This
+     * cuts down on spurious inputs. In addition, this method only pays attention
+     * to drags initiated with the left mouse button.
+     *
+     * @param event     The event with the mouse information
+     * @param previous  The previously reported mouse location
+     * @param focus     Whether this device has focus (UNUSED)
+     */
+    void touchmotionCB(const cugl::TouchEvent& event, const cugl::Vec2 previous, bool focus);
     
 };
 
